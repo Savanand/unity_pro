@@ -31,10 +31,8 @@ import org.codehaus.jettison.json.JSONObject;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.unity.Project;
 
-import javassist.bytecode.Descriptor.Iterator;
 
 
 
@@ -52,7 +50,7 @@ public class JSONService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getProjectInJSON(@QueryParam("projectid") int projectid, @QueryParam("country") String country, 
 			@QueryParam("number") int number, @QueryParam("keyword") String keyword) throws JsonParseException, JsonMappingException, IOException, JSONException, ParseException {
-
+		//country= country.toUpperCase();
 		System.out.println("Scanned params are..."+" \nProject id"+ projectid+" "
 				+ "\nCountry"+ country+" \nNumber"+ number+" \nKeyword"+ keyword);
 //		ObjectMapper objectMapper = new ObjectMapper();
@@ -110,7 +108,7 @@ public class JSONService {
 		
 		if(country!=null){
 			interResult = interResult.stream()
-				    .filter(p -> Arrays.asList(p.getTargetCountries()).contains(country)).collect(Collectors.toList());
+				    .filter(p -> Arrays.asList(p.getTargetCountries()).contains(country.toUpperCase())).collect(Collectors.toList());
 			System.out.println("Done- Checking projects for country");
 			printProjects(interResult);
 					
