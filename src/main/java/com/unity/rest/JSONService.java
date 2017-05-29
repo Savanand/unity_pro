@@ -30,9 +30,15 @@ import org.codehaus.jettison.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jackson.JsonLoader;
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import com.github.fge.jsonschema.core.report.ProcessingReport;
+import com.github.fge.jsonschema.main.JsonSchema;
+import com.github.fge.jsonschema.main.JsonSchemaFactory;
+import com.github.fge.jsonschema.main.JsonValidator;
 import com.unity.Project;
-
 
 
 
@@ -97,6 +103,7 @@ public class JSONService {
 		interResult = interResult.stream()
 				.filter(p -> p.getEnabled().equals("true"))
 			    .filter(p -> p.getProjectUrl()!=null)
+			    .filter(p -> p.getProjectUrl()!="")
 			    .collect(Collectors.toList());
 		System.out.println("Done- Checking projects with enabled true and filtering projecturl with null");
 		printProjects(interResult);
@@ -153,18 +160,97 @@ public class JSONService {
 	@POST
 	@Path("/createproject")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createProjectInJSON(String Project) throws JsonGenerationException, JsonMappingException, IOException {
+	public Response createProjectInJSON(String Project) throws JsonGenerationException, JsonMappingException, IOException, ProcessingException {
 
+		
 		
 		ObjectMapper mapper = new ObjectMapper();
 		Project filter = mapper.readValue(Project, Project.class);
 	    System.out.println(mapper.writeValueAsString(filter));
+	    
+	    if(!validInputJson(mapper.writeValueAsString(filter))){
+	    	return Response.status(400).entity(mapper.writeValueAsString(filter)).build();
+	    }
+	    
 	    ClassLoader classLoader = getClass().getClassLoader();
 	    System.out.println(classLoader.getResource("resources/projects.txt").getFile());
 		mapper.writeValue(new FileOutputStream("E:\\projects.txt", true), filter);
 		System.out.println("--Done--");
 		return Response.status(201).entity(mapper.writeValueAsString(filter)).build();
 
+	}
+	
+	public boolean validInputJson(String jsonData) throws IOException, ProcessingException{
+			String jsonSchema="{"+
+				   "\"$schema\": \"http://json-schema.org/draft-04/schema#\","+
+				    "\"definitions\": {},"+
+				    "\"id\": \"http://example.com/example.json\","+
+				    "\"properties\": {"+
+				        "\"creationDate\": {"+
+				            "\"id\": \"/properties/creationDate\","+
+				            "\"type\": \"string\""+
+				        "},"+
+				        "\"enabled\": {"+
+				            "\"id\": \"/properties/enabled\","+
+				            "\"type\": \"string\""+
+				        "},"+
+				        "\"expiryDate\": {"+
+				            "\"id\": \"/properties/expiryDate\","+
+				            "\"type\": \"string\""+
+				        "},"+
+				        "\"id\": {"+
+				            "\"id\": \"/properties/id\","+
+				            "\"type\": \"integer\""+
+				        "},"+
+				        "\"projectCost\": {"+
+				            "\"id\": \"/properties/projectCost\","+
+				            "\"type\": \"number\""+
+				        "},"+
+				        "\"projectName\": {"+
+				            "\"id\": \"/properties/projectName\","+
+				            "\"type\": \"string\""+
+				        "},"+
+				        "\"projectUrl\": {"+
+				            "\"id\": \"/properties/projectUrl\","+
+				            "\"type\": \"string\""+
+				        "},"+
+				        "\"targetCountries\": {"+
+				            "\"id\": \"/properties/targetCountries\","+
+				            "\"items\": {"+
+				                "\"id\": \"/properties/targetCountries/items\","+
+				                "\"type\": \"string\""+
+				            "},"+
+				            "\"type\": \"array\""+
+				        "},"+
+				        "\"targetKeys\": {"+
+				            "\"id\": \"/properties/targetKeys\","+
+				            "\"items\": {"+
+				                "\"id\": \"/properties/targetKeys/items\","+
+				                "\"properties\": {"+
+				                    "\"keyword\": {"+
+				                        "\"id\": \"/properties/targetKeys/items/properties/keyword\","+
+				                        "\"type\": \"string\""+
+				                    "},"+
+				                    "\"number\": {"+
+				                        "\"id\": \"/properties/targetKeys/items/properties/number\","+
+				                        "\"type\": \"integer\""+
+				                    "}"+
+				                "},"+
+				                "\"type\": \"object\""+
+				            "},"+
+				            "\"type\": \"array\""+
+				        "}"+
+				    "},"+
+				    "\"type\": \"object\""+
+				"}";
+	       final JsonNode schema = JsonLoader.fromString(jsonSchema);
+	       final JsonNode data = JsonLoader.fromString(jsonData);
+	       final JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
+	       JsonValidator validator = factory.getValidator();
+
+	       ProcessingReport report = validator.validate(schema, data);
+	       System.out.println(report.isSuccess());
+	       return report.isSuccess();
 	}
 	
 	public boolean checkIfExpired(Project p){

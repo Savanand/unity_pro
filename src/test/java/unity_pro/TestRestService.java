@@ -22,6 +22,11 @@ import junit.framework.Assert;
  */
 public class TestRestService {
 
+	
+	
+	/*
+	 * TEST METHODS - GET
+	 */
 	@Test
 	
 	public void test_all_params_present() throws JSONException, org.json.JSONException {
@@ -244,6 +249,49 @@ public class TestRestService {
 		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
 		System.out.println("Output from Server .... \n");
 		System.out.println(actual);
+		JSONAssert.assertEquals(expected, actual, false);
+	}
+	
+	/*
+	 * TEST METHODS- POST
+	 */
+	
+	@Test
+	
+	public void test_valid_json_post() throws JSONException, org.json.JSONException {
+		// check POST valid json input in POST request
+		Client client = Client.create();
+
+		WebResource webResource = client
+		   .resource("http://localhost:8080/unity_pro/rest/service/createproject");
+		String input="{\"id\": 9,\"projectName\":\"test project number 9\",\"creationDate\": \"05122017 00:00:00\",\"expiryDate\": \"05272018 00:00:00\",\"enabled\": \"true\",\"targetCountries\": [\"RUSSIA\",\"GERMANY\"],\"projectCost\": 5.4,\"projectUrl\":\"http://www.testproject9.com\",\"targetKeys\":[{\"number\": 20,\"keyword\": \"reset\"},{\"number\": 32,\"keyword\": \"mix\"}]}";
+		ClientResponse response = webResource.type("application/json")
+                   .post(ClientResponse.class, input);
+		String expected= "{\"id\": 9,\"projectName\":\"test project number 9\",\"creationDate\": \"05122017 00:00:00\",\"expiryDate\": \"05272018 00:00:00\",\"enabled\": \"true\",\"targetCountries\": [\"RUSSIA\",\"GERMANY\"],\"projectCost\": 5.4,\"projectUrl\":\"http://www.testproject9.com\",\"targetKeys\":[{\"number\": 20,\"keyword\": \"reset\"},{\"number\": 32,\"keyword\": \"mix\"}]}";
+		System.out.println("Output from Server .... \n");
+		String actual = response.getEntity(String.class);
+		System.out.println(actual);
+		//Assert.assertEquals(201, response.getStatus());
+		JSONAssert.assertEquals(expected, actual, false);
+	}
+	
+	
+	@Test
+	
+	public void test_invalid_json_post() throws JSONException, org.json.JSONException {
+		// check POST valid json input in POST request
+		Client client = Client.create();
+
+		WebResource webResource = client
+		   .resource("http://localhost:8080/unity_pro/rest/service/createproject");
+		String input="{\"projectName\":\"test project number 9\",\"creationDate\": \"05122017 00:00:00\",\"expiryDate\": \"05272018 00:00:00\",\"enabled\": \"true\",\"targetCountries\": [\"RUSSIA\",\"GERMANY\"],\"projectCost\": 5.4,\"projectUrl\":\"http://www.testproject9.com\",\"targetKeys\":[{\"number\": 20,\"keyword\": \"reset\"},{\"number\": 32,\"keyword\": \"mix\"}]}";
+		ClientResponse response = webResource.type("application/json")
+                   .post(ClientResponse.class, input);
+		String expected= "{\"id\": 9,\"projectName\":\"test project number 9\",\"creationDate\": \"05122017 00:00:00\",\"expiryDate\": \"05272018 00:00:00\",\"enabled\": \"true\",\"targetCountries\": [\"RUSSIA\",\"GERMANY\"],\"projectCost\": 5.4,\"projectUrl\":\"http://www.testproject9.com\",\"targetKeys\":[{\"number\": 20,\"keyword\": \"reset\"},{\"number\": 32,\"keyword\": \"mix\"}]}";
+		System.out.println("Output from Server .... \n");
+		String actual = response.getEntity(String.class);
+		System.out.println(actual);
+		//Assert.assertEquals(201, response.getStatus());
 		JSONAssert.assertEquals(expected, actual, false);
 	}
 }
