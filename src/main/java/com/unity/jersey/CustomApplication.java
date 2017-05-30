@@ -9,7 +9,7 @@ public class CustomApplication extends ResourceConfig
 {
     public CustomApplication() 
     {
-        packages("com.unity.jersey");
+        packages("com.unity");
         register(JacksonFeature.class);
  
         register(CustomLoggingFilter.class);

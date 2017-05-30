@@ -55,8 +55,6 @@ public class TestRestService {
                    .get(ClientResponse.class);
 		String actual=response.getEntity(String.class);
 		String expected= "{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}";
-		//JSONObject actual = new JSONObject(response.getEntity(String.class));
-		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
 		System.out.println("Output from Server .... \n");
 		System.out.println(actual);
 		JSONAssert.assertEquals(expected, actual, false);
@@ -73,8 +71,6 @@ public class TestRestService {
                    .get(ClientResponse.class);
 		String actual=response.getEntity(String.class);
 		String expected= "{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}";
-		//JSONObject actual = new JSONObject(response.getEntity(String.class));
-		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
 		System.out.println("Output from Server .... \n");
 		System.out.println(actual);
 		JSONAssert.assertEquals(expected, actual, false);
@@ -91,8 +87,6 @@ public class TestRestService {
                    .get(ClientResponse.class);
 		String actual=response.getEntity(String.class);
 		String expected= "{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}";
-		//JSONObject actual = new JSONObject(response.getEntity(String.class));
-		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
 		System.out.println("Output from Server .... \n");
 		System.out.println(actual);
 		JSONAssert.assertEquals(expected, actual, false);
@@ -110,8 +104,6 @@ public class TestRestService {
                    .get(ClientResponse.class);
 		String actual=response.getEntity(String.class);
 		String expected= "{\"projectName\":\"test project number 5\",\"projectCost\":8.8,\"projectUrl\":\"www.testpro5.com\"}";
-		//JSONObject actual = new JSONObject(response.getEntity(String.class));
-		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
 		System.out.println("Output from Server .... \n");
 		System.out.println(actual);
 		JSONAssert.assertEquals(expected, actual, false);
@@ -129,8 +121,6 @@ public class TestRestService {
                    .get(ClientResponse.class);
 		String actual=response.getEntity(String.class);
 		String expected= "{\"projectName\":\"test project number 4\",\"projectCost\":6.4,\"projectUrl\":\"www.hight.com\"}";
-		//JSONObject actual = new JSONObject(response.getEntity(String.class));
-		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
 		System.out.println("Output from Server .... \n");
 		System.out.println(actual);
 		JSONAssert.assertEquals(expected, actual, false);
@@ -148,8 +138,6 @@ public class TestRestService {
                    .get(ClientResponse.class);
 		String actual=response.getEntity(String.class);
 		String expected= "{\"projectName\":\"test project number 5\",\"projectCost\":8.8,\"projectUrl\":\"www.testpro5.com\"}";
-		//JSONObject actual = new JSONObject(response.getEntity(String.class));
-		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
 		System.out.println("Output from Server .... \n");
 		System.out.println(actual);
 		JSONAssert.assertEquals(expected, actual, false);
@@ -167,8 +155,6 @@ public class TestRestService {
                    .get(ClientResponse.class);
 		String actual=response.getEntity(String.class);
 		String expected= "{\"message\":\"no project found\"}";
-		//JSONObject actual = new JSONObject(response.getEntity(String.class));
-		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
 		System.out.println("Output from Server .... \n");
 		System.out.println(actual);
 		JSONAssert.assertEquals(expected, actual, false);
@@ -186,8 +172,6 @@ public class TestRestService {
                    .get(ClientResponse.class);
 		String actual=response.getEntity(String.class);
 		String expected= "{\"message\":\"no project found\"}";
-		//JSONObject actual = new JSONObject(response.getEntity(String.class));
-		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
 		System.out.println("Output from Server .... \n");
 		System.out.println(actual);
 		JSONAssert.assertEquals(expected, actual, false);
@@ -205,8 +189,6 @@ public class TestRestService {
                    .get(ClientResponse.class);
 		String actual=response.getEntity(String.class);
 		String expected= "{\"message\":\"no project found\"}";
-		//JSONObject actual = new JSONObject(response.getEntity(String.class));
-		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
 		System.out.println("Output from Server .... \n");
 		System.out.println(actual);
 		JSONAssert.assertEquals(expected, actual, false);
@@ -224,8 +206,6 @@ public class TestRestService {
                    .get(ClientResponse.class);
 		String actual=response.getEntity(String.class);
 		String expected= "{\"message\":\"no project found\"}";
-		//JSONObject actual = new JSONObject(response.getEntity(String.class));
-		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
 		System.out.println("Output from Server .... \n");
 		System.out.println(actual);
 		JSONAssert.assertEquals(expected, actual, false);
@@ -244,8 +224,6 @@ public class TestRestService {
                    .get(ClientResponse.class);
 		String actual=response.getEntity(String.class);
 		String expected= "{\"message\":\"no project found\"}";
-		//JSONObject actual = new JSONObject(response.getEntity(String.class));
-		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
 		System.out.println("Output from Server .... \n");
 		System.out.println(actual);
 		JSONAssert.assertEquals(expected, actual, false);
@@ -292,7 +270,6 @@ public class TestRestService {
 		System.out.println("Output from Server .... \n");
 		String actual = response.getEntity(String.class);
 		System.out.println(actual);
-		//Assert.assertEquals(201, response.getStatus());
 		JSONAssert.assertEquals(expected, actual, false);
 	}
 	
@@ -339,8 +316,6 @@ public class TestRestService {
 				"\"statusDescription\": \"Not Found\","+
 				"\"errorMessage\": \"HTTP 404 Not Found\""+
 				"}";
-		//JSONObject actual = new JSONObject(response.getEntity(String.class));
-		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
 		System.out.println("Output from Server .... \n");
 		System.out.println(actual);
 		JSONAssert.assertEquals(expected, actual, false);

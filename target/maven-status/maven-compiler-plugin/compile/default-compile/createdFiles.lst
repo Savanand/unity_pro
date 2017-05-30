@@ -1,0 +1,7 @@
+com\unity\rest\JSONService.class
+com\unity\exception\Error.class
+com\unity\TargetKey.class
+com\unity\jersey\provider\CustomLoggingFilter.class
+com\unity\Project.class
+com\unity\exception\mapper\GenericExceptionMapper.class
+com\unity\jersey\CustomApplication.class

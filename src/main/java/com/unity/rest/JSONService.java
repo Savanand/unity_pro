@@ -59,21 +59,9 @@ public class JSONService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getProjectInJSON(@QueryParam("projectid") int projectid, @QueryParam("country") String country, 
 			@QueryParam("number") int number, @QueryParam("keyword") String keyword, @Context UriInfo uriInfo) throws JsonParseException, JsonMappingException, IOException, JSONException, ParseException {
-		//country= country.toUpperCase();
-		
-//		if(projectid<0){
-//			System.out.println("Inside exception");
-//	        throw new BadRequestException();
-//		}
 
-		System.out.println("URI Info="+
-				  "Absolute Path"+uriInfo.getAbsolutePath()
-				+ "Base URI"+uriInfo.getBaseUri()
-				+ "Request URI"+uriInfo.getRequestUri()
-				+ "");
 		System.out.println("Scanned params are..."+" \nProject id"+ projectid+" "
 				+ "\nCountry"+ country+" \nNumber"+ number+" \nKeyword"+ keyword);
-//		ObjectMapper objectMapper = new ObjectMapper();
 		List<Project> interResult= new ArrayList<Project>();
 		try (FileInputStream fis = new FileInputStream("E:\\projects.txt")) {
 	        JsonFactory jf = new JsonFactory();
@@ -91,7 +79,7 @@ public class JSONService {
 		printProjects(interResult);
 		
 		
-		
+		// checking if projectid/country/keyword all of them are not present in url
 		if(projectid<=0 && country==null && number<=0 && keyword==null){
 			// return project with highest price
 			System.out.println("True- no url params");
@@ -101,7 +89,8 @@ public class JSONService {
 				return generateResponse(p.get());
 			}
 		}
-		
+
+		// setting up for if only projectid is not present and other params are present
 		boolean filterByCostFlag= false;   
 		if(projectid>0){    // apply projectid filter if its present
 			interResult = interResult.stream()
@@ -114,6 +103,8 @@ public class JSONService {
 		else {  // set flag true if project id is not present, filter by cost later- at the end
 			filterByCostFlag= true;
 		}
+		
+		// filtering by projecturl is null or not present, and projects with enabled=true
 		interResult = interResult.stream()
 				.filter(p -> p.getEnabled().equals("true"))
 			    .filter(p -> p.getProjectUrl()!=null)
@@ -121,12 +112,15 @@ public class JSONService {
 			    .collect(Collectors.toList());
 		System.out.println("Done- Checking projects with enabled true and filtering projecturl with null");
 		printProjects(interResult);
+		
+		// filtering by expire date 
 		interResult = interResult.stream()
 			    .filter(p -> checkIfExpired(p))
 			    .collect(Collectors.toList());
 		System.out.println("Done- Checking projects for expiry date ");
 		printProjects(interResult);
 		
+		// filter by country 
 		if(country!=null){
 			interResult = interResult.stream()
 				    .filter(p -> Arrays.asList(p.getTargetCountries()).contains(country.toUpperCase())).collect(Collectors.toList());
@@ -134,6 +128,7 @@ public class JSONService {
 			printProjects(interResult);
 					
 		}
+		// filter by number greater than equal to the existing number
 		if(number>0){
 			interResult = interResult.stream()
 				    .filter(p -> p.getTargetKeys()
@@ -143,6 +138,8 @@ public class JSONService {
 			printProjects(interResult);
 			
 		} 
+		
+		// filtering by keywords
 		if(keyword!=null){
 			interResult = interResult.stream()
 				    .filter(p -> p.getTargetKeys()
@@ -152,17 +149,22 @@ public class JSONService {
 			printProjects(interResult);
 
 		}
+		
+		// project id is not present, filtered by other params above and filtering by project with max cost
 		if(filterByCostFlag){
 			Optional<Project> p = interResult.stream().max((o1,o2) -> Double.compare(o1.getProjectCost(),o2.getProjectCost()));
 			if(p!=null && p.isPresent()){
 				return generateResponse(p.get());
 			}
 		}
+		
+		// if list contains one element result is not empty return the project response
 		if(!interResult.isEmpty()){
 			System.out.println("True: result is not empty");
 			printProjects(interResult);
 			return generateResponse(interResult.get(0));
 		}
+		// if list is empty, no match is found and return no project found response
 		else{
 			System.out.println("True: no projects found");
 			printProjects(interResult);
@@ -201,7 +203,8 @@ public class JSONService {
 		return Response.status(201).entity(mapper.writeValueAsString(filter)).build();
 
 	}
-	
+
+	// check valid json 
 	public boolean validInputJson(String jsonData) throws IOException, ProcessingException{
 			String jsonSchema="{"+
 				   "\"$schema\": \"http://json-schema.org/draft-04/schema#\","+
@@ -277,7 +280,7 @@ public class JSONService {
 	       System.out.println(report.isSuccess());
 	       return report.isSuccess();
 	}
-	
+	// check if project is expired 
 	public boolean checkIfExpired(Project p){
 		SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy h:m:s");
 		Date today_ = Calendar.getInstance().getTime(); 
@@ -293,7 +296,7 @@ public class JSONService {
 		return isExpired;
 		
 	}
-	
+	// print all the projects in the list 
 	public void printProjects(List<Project> li){
 		
 		ListIterator<Project> it= li.listIterator();
@@ -301,7 +304,7 @@ public class JSONService {
 			System.out.println(it.next());
 		}
 	}
-	
+	// generate json response object and return it
 	public String generateResponse(Project p) throws JSONException{
 		
 		res.put("projectName", p.getProjectName());
@@ -310,7 +313,7 @@ public class JSONService {
 		
 		return res.toString();
 	}
-	
+	// check if given string is having all alphabets
 	public boolean isAlpha(String name) {
 	    char[] chars = name.toCharArray();
 
