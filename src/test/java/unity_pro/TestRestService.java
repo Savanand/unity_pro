@@ -6,7 +6,7 @@ package unity_pro;
 
 
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -14,7 +14,6 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
-import junit.framework.Assert;
 
 /**
  * @author Aniket Savanand
@@ -232,7 +231,7 @@ public class TestRestService {
 		JSONAssert.assertEquals(expected, actual, false);
 	}
 	
-	/* implement logic may be failing*/
+	
 	@Test
 	public void test_should_skip_project_if_no_projectUrl() throws JSONException, org.json.JSONException {
 		//if project is not enabled, should return json message with no matching project found
@@ -252,6 +251,28 @@ public class TestRestService {
 		JSONAssert.assertEquals(expected, actual, false);
 	}
 	
+	@Test
+	public void test_malformed_get_url() throws JSONException, org.json.JSONException {
+		//if project is not enabled, should return json message with no matching project found
+		Client client = Client.create();
+
+		WebResource webResource = client
+		   .resource("http://localhost:8080/unity_pro/rest/malformedservice/requestproject?projectid=8&country=usa&number=29&keyword=sports");
+
+		ClientResponse response = webResource.accept("application/json")
+                   .get(ClientResponse.class);
+		String actual=response.getEntity(String.class);
+		String expected= "{"+
+				"\"statusCode\": 404,"+
+				"\"statusDescription\": \"Not Found\","+
+				"\"errorMessage\": \"HTTP 404 Not Found\""+
+				"}";
+		//JSONObject actual = new JSONObject(response.getEntity(String.class));
+		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
+		System.out.println("Output from Server .... \n");
+		System.out.println(actual);
+		JSONAssert.assertEquals(expected, actual, false);
+	}
 	/*
 	 * TEST METHODS- POST
 	 */
@@ -280,6 +301,7 @@ public class TestRestService {
 	
 	public void test_invalid_json_post() throws JSONException, org.json.JSONException {
 		// check POST valid json input in POST request
+		// if project_id( assume- is a critical field) is missing from json input
 		Client client = Client.create();
 
 		WebResource webResource = client
@@ -287,11 +309,42 @@ public class TestRestService {
 		String input="{\"projectName\":\"test project number 9\",\"creationDate\": \"05122017 00:00:00\",\"expiryDate\": \"05272018 00:00:00\",\"enabled\": \"true\",\"targetCountries\": [\"RUSSIA\",\"GERMANY\"],\"projectCost\": 5.4,\"projectUrl\":\"http://www.testproject9.com\",\"targetKeys\":[{\"number\": 20,\"keyword\": \"reset\"},{\"number\": 32,\"keyword\": \"mix\"}]}";
 		ClientResponse response = webResource.type("application/json")
                    .post(ClientResponse.class, input);
-		String expected= "{\"id\": 9,\"projectName\":\"test project number 9\",\"creationDate\": \"05122017 00:00:00\",\"expiryDate\": \"05272018 00:00:00\",\"enabled\": \"true\",\"targetCountries\": [\"RUSSIA\",\"GERMANY\"],\"projectCost\": 5.4,\"projectUrl\":\"http://www.testproject9.com\",\"targetKeys\":[{\"number\": 20,\"keyword\": \"reset\"},{\"number\": 32,\"keyword\": \"mix\"}]}";
+		String expected= "{"+
+"\"statusCode\": 400,"+
+"\"statusDescription\": \"Bad Request\","+
+"\"errorMessage\": \"HTTP 400 Bad Request\""+
+"}";
 		System.out.println("Output from Server .... \n");
 		String actual = response.getEntity(String.class);
 		System.out.println(actual);
-		//Assert.assertEquals(201, response.getStatus());
+		Assert.assertEquals(400, response.getStatus());
 		JSONAssert.assertEquals(expected, actual, false);
 	}
+	
+	@Test
+	public void test_malformed_post_url() throws JSONException, org.json.JSONException {
+		//if project is not enabled, should return json message with no matching project found
+		Client client = Client.create();
+
+		WebResource webResource = client
+		   .resource("http://localhost:8080/unity_pro/rest/service/malformedcreateproject");
+		
+		String input="{\"id\": 9,\"projectName\":\"test project number 9\",\"creationDate\": \"05122017 00:00:00\",\"expiryDate\": \"05272018 00:00:00\",\"enabled\": \"true\",\"targetCountries\": [\"RUSSIA\",\"GERMANY\"],\"projectCost\": 5.4,\"projectUrl\":\"http://www.testproject9.com\",\"targetKeys\":[{\"number\": 20,\"keyword\": \"reset\"},{\"number\": 32,\"keyword\": \"mix\"}]}";
+		
+		ClientResponse response = webResource.type("application/json")
+                   .post(ClientResponse.class, input);
+		String actual=response.getEntity(String.class);
+		String expected= "{"+
+				"\"statusCode\": 404,"+
+				"\"statusDescription\": \"Not Found\","+
+				"\"errorMessage\": \"HTTP 404 Not Found\""+
+				"}";
+		//JSONObject actual = new JSONObject(response.getEntity(String.class));
+		//JSONObject expected = new JSONObject("{\"projectName\":\"test project number 1\",\"projectCost\":5.5,\"projectUrl\":\"http:\\/\\/www.unity3d.com\"}");
+		System.out.println("Output from Server .... \n");
+		System.out.println(actual);
+		JSONAssert.assertEquals(expected, actual, false);
+	}
+	
+	
 }

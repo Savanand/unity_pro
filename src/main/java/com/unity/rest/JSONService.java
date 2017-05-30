@@ -13,14 +13,18 @@ import java.util.ListIterator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
@@ -35,7 +39,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jackson.JsonLoader;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
-import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.github.fge.jsonschema.main.JsonValidator;
 import com.unity.Project;
@@ -55,8 +58,19 @@ public class JSONService {
 	@Path("/requestproject")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getProjectInJSON(@QueryParam("projectid") int projectid, @QueryParam("country") String country, 
-			@QueryParam("number") int number, @QueryParam("keyword") String keyword) throws JsonParseException, JsonMappingException, IOException, JSONException, ParseException {
+			@QueryParam("number") int number, @QueryParam("keyword") String keyword, @Context UriInfo uriInfo) throws JsonParseException, JsonMappingException, IOException, JSONException, ParseException {
 		//country= country.toUpperCase();
+		
+//		if(projectid<0){
+//			System.out.println("Inside exception");
+//	        throw new BadRequestException();
+//		}
+
+		System.out.println("URI Info="+
+				  "Absolute Path"+uriInfo.getAbsolutePath()
+				+ "Base URI"+uriInfo.getBaseUri()
+				+ "Request URI"+uriInfo.getRequestUri()
+				+ "");
 		System.out.println("Scanned params are..."+" \nProject id"+ projectid+" "
 				+ "\nCountry"+ country+" \nNumber"+ number+" \nKeyword"+ keyword);
 //		ObjectMapper objectMapper = new ObjectMapper();
@@ -166,14 +180,22 @@ public class JSONService {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		Project filter = mapper.readValue(Project, Project.class);
+		
+		System.out.println("id=" + filter.getId());
+		if (filter.getId()<=0){
+			System.out.println("Inside exception");
+	        throw new BadRequestException();
+		}
 	    System.out.println(mapper.writeValueAsString(filter));
 	    
 	    if(!validInputJson(mapper.writeValueAsString(filter))){
+//	    if(!validInputJson(Project)){
+
 	    	return Response.status(400).entity(mapper.writeValueAsString(filter)).build();
 	    }
 	    
-	    ClassLoader classLoader = getClass().getClassLoader();
-	    System.out.println(classLoader.getResource("resources/projects.txt").getFile());
+	  //  ClassLoader classLoader = getClass().getClassLoader();
+	 //   System.out.println(classLoader.getResource("resources/projects.txt").getFile());
 		mapper.writeValue(new FileOutputStream("E:\\projects.txt", true), filter);
 		System.out.println("--Done--");
 		return Response.status(201).entity(mapper.writeValueAsString(filter)).build();
@@ -241,6 +263,9 @@ public class JSONService {
 				            "\"type\": \"array\""+
 				        "}"+
 				    "},"+
+				    "\"required\": ["+
+			        "\"id\""+
+			    "],"+
 				    "\"type\": \"object\""+
 				"}";
 	       final JsonNode schema = JsonLoader.fromString(jsonSchema);
@@ -284,5 +309,17 @@ public class JSONService {
 		res.put("projectUrl", p.getProjectUrl());
 		
 		return res.toString();
+	}
+	
+	public boolean isAlpha(String name) {
+	    char[] chars = name.toCharArray();
+
+	    for (char c : chars) {
+	        if(!Character.isLetter(c)) {
+	            return false;
+	        }
+	    }
+
+	    return true;
 	}
 }
